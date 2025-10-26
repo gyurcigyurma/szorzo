@@ -1,5 +1,5 @@
 // Szorzo.jsx
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ul from "./assets/ul.png";
 import szabad from "./assets/szabad.png";
 import code from "./assets/panel.jpg"
@@ -7,6 +7,8 @@ import code from "./assets/panel.jpg"
 export default function Szorzo() {
 
   const [allSolved, setAllsolved] = useState(false);
+  const [timer, setTimer] = useState(0);
+
   const szorzasok = useMemo(() => {
     const lista = [];
     for (let i = 1; i <= 5; i++) {
@@ -41,6 +43,16 @@ export default function Szorzo() {
       }
     }
   }
+  useEffect(() => {
+    const i = setInterval(() => {
+      if (!allSolved) {
+        setTimer(oldtimer => oldtimer + 1);
+      }
+    }, 1000);
+
+    return () => clearInterval(i);
+
+  }, [allSolved]);
 
   function handleCheck(index) {
     const tipp = tippek[index].trim();
@@ -65,6 +77,7 @@ export default function Szorzo() {
     }
   }
 
+
   return (
     <div style={{ padding: 20 }}>
       <h2>Kódtörő</h2>
@@ -79,9 +92,9 @@ export default function Szorzo() {
               onKeyDown={(e) => handleKodTabla(e)} >
             </input>
           </td>
-
         </tr>
       </table>
+      <timer>Eltelt idő: {timer} másodperc</timer>
 
 
       {szorzasok.map((f, idx) => {
@@ -118,7 +131,7 @@ export default function Szorzo() {
 
       {allSolved &&
         <div style={{ marginLeft: 10, fontSize: "18px", fontWeight: 'bold', color: 'yellow' }}>
-          <span>Gratulálok, sikerült kiszabadítani Leot!</span>
+          <span>Gratulálok, sikerült kiszabadítani Leot {timer} mp alatt!</span>
           <br />
           <input type="button" value="Új játék?" onClick={() => window.location.reload()} style={{ marginLeft: 10, color: "white", marginTop: "10px", width: "300px", fontSize: "19px", padding: "5px 5px", cursor: "pointer" }} />
         </div>}
